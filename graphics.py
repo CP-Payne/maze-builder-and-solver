@@ -1,6 +1,6 @@
 from tkinter import Tk, BOTH, Canvas
 
-class Window():
+class Window:
     def __init__(self, width, height) -> None:
         self.width = width
         self.height = height
@@ -24,16 +24,16 @@ class Window():
     def close(self):
         self.__running = False
 
-    def draw_line(self, line, color):
+    def draw_line(self, line, color="black"):
         line.draw(canva=self.__canvas, fill_color=color)
-        
 
-class Point():
+
+class Point:
     def __init__(self, x, y) -> None:
         self.x = x
         self.y = y
 
-class Line():
+class Line:
     def __init__(self,start_point, end_point) -> None:
         self.start_point = start_point
         self.end_point = end_point 

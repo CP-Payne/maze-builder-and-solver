@@ -1,14 +1,17 @@
 from graphics import Window, Line, Point
+from maze import Cell
 
 def main():
-    win = Window(800, 600)
+    win = Window(1000, 1000)
 
-    start = Point(5, 5)
-    end = Point(25, 25)
+    cell1 = Cell(win)
+    cell1.draw(200, 200, 250, 250)
 
-    line = Line(start, end)
+    cell2 = Cell(win)
+    cell2.draw(300, 300, 350, 350)
 
-    win.draw_line(line, "black")
+    cell1.draw_move(cell2, undo=True)
+
 
     win.wait_for_close()
 
