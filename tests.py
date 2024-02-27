@@ -16,6 +16,8 @@ class Test(unittest.TestCase):
             len(m1._cells[0]),
             num_cols,
         )
+    # TODO: Add new method to test large maze size
+    # TODO: Add new method to test medium maze size
 
 if __name__== "__main__":
     unittest.main()
