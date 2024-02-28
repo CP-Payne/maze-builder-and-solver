@@ -20,6 +20,8 @@ class Maze:
         self._create_cells()
         self._break_entrance_and_exit()
         self._break_walls_r(0, 0)
+        #self._break_walls_iterative()
+        self._reset_cells_visited()
     
     def _create_cells(self):
         for row in range(self.num_rows):
@@ -96,15 +98,44 @@ class Maze:
     # TODO: Recursion limit reached to fast. Use stack to simulate recursion
     def _break_walls_r(self, row, col):
         self._cells[row][col].visited = True
+        #self._animate()
         while True:
             to_visit = self._get_valid_adjacent_cells_i(row, col)
             if len(to_visit) == 0:
                 self._draw_cell(row, col) 
+                self._animate()
                 return
 
             random_direction = random.choice(to_visit)
             self._break_cell_wall(row, col, random_direction)
             self._break_walls_r(random_direction[0], random_direction[1])
+    def _break_walls_iterative(self):
+        stack = [(0, 0)]
+        self._cells[0][0].visited = True
+
+        while stack:
+            row, col = stack.pop()
+            self._animate()  # If you want to animate the process
+            to_visit = self._get_valid_adjacent_cells_i(row, col)
+
+            if to_visit:
+                # Push the current cell back onto the stack
+                stack.append((row, col))
+                # Choose a random adjacent cell to visit next
+                next_row, next_col = random.choice(to_visit)
+                # Break the wall between the current cell and the chosen adjacent cell
+                self._break_cell_wall(row, col, (next_row, next_col))
+                # Mark the chosen cell as visited and add it to the stack
+                self._cells[next_row][next_col].visited = True
+                stack.append((next_row, next_col))
+                # Draw the current and adjacent cells to visually update the maze
+                self._draw_cell(row, col)
+                self._draw_cell(next_row, next_col)
+
+    def _reset_cells_visited(self):
+        for row in range(self.num_rows):
+            for col in range(self.num_cols):
+                self._cells[row][col].visited=False
             
             
             
