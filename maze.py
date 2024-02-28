@@ -7,7 +7,6 @@ class Maze:
     def __init__(self, x1, y1, num_rows, num_cols, cell_size_x, cell_size_y, win, seed=None) -> None:
         self.x1 = x1
         self.y1 = y1
-        # TODO: Add seed as parameter to init. Update rest of code to reflect
         self.seed = seed
         if self.seed:
             random.seed(self.seed)
@@ -55,7 +54,7 @@ class Maze:
         self._draw_cell(0, 0)
         self._draw_cell(self.num_rows-1, self.num_cols-1)
 
-    def _get_valid_adjacent_cells_i(self, row, col):
+    def _get_unvisited_adjacent_cells_i(self, row, col):
         adjacent_cells = []
         # Checking right and left cells
         if col > 0 and self._cells[row][col-1].visited == False:
@@ -68,6 +67,35 @@ class Maze:
         if row > 0 and self._cells[row-1][col].visited == False:
             adjacent_cells.append((row-1, col))
         return adjacent_cells
+    
+    def _get_clear_path_cells(self, row, col, adjacent_cells_i):
+        valid_cells = []
+        
+        for a_row, a_col in adjacent_cells_i:
+            path_direction = (row-a_row, col-a_col)
+            if path_direction[0] == 0:
+                # Cells in same row
+                # Check walls on left and right
+                if path_direction[1] == -1:
+                    # Check current cell's right wall and adjacent cell's left wall
+                    if not self._cells[row][col].has_right_wall and not self._cells[a_row][a_col].has_left_wall:
+                        valid_cells.append((a_row, a_col))
+                elif path_direction[1] == 1:
+                    # Check current cell's left wall and adjacent cell's right wall
+                    if not self._cells[row][col].has_left_wall and not self._cells[a_row][a_col].has_right_wall:
+                        valid_cells.append((a_row, a_col))
+            elif path_direction[1] == 0:
+                # Cells in same column
+                # Check cells for path - top or bottom
+                if path_direction[0] == -1:
+                    # Check current cell's bottom wall and adjacent cell's top wall
+                    if not self._cells[row][col].has_bottom_wall and not self._cells[a_row][a_col].has_top_wall:
+                        valid_cells.append((a_row, a_col))
+                elif path_direction[0] == 1:
+                    # Check current cell's top wall and adjacent cell's bottom wall
+                    if not self._cells[row][col].has_top_wall and not self._cells[a_row][a_col].has_bottom_wall:
+                        valid_cells.append((a_row, a_col))
+        return valid_cells
     
     def _break_cell_wall(self, row, col, adjacent_cell):
         break_direction = (row-adjacent_cell[0], col-adjacent_cell[1])
@@ -95,12 +123,10 @@ class Maze:
                 self._cells[row][col].has_top_wall = False
                 self._cells[adjacent_cell[0]][adjacent_cell[1]].has_bottom_wall = False
             
-    # TODO: Recursion limit reached to fast. Use stack to simulate recursion
     def _break_walls_r(self, row, col):
         self._cells[row][col].visited = True
-        #self._animate()
         while True:
-            to_visit = self._get_valid_adjacent_cells_i(row, col)
+            to_visit = self._get_unvisited_adjacent_cells_i(row, col)
             if len(to_visit) == 0:
                 self._draw_cell(row, col) 
                 #self._animate()
@@ -116,7 +142,7 @@ class Maze:
         while stack:
             row, col = stack.pop()
             self._animate()  # If you want to animate the process
-            to_visit = self._get_valid_adjacent_cells_i(row, col)
+            to_visit = self._get_unvisited_adjacent_cells_i(row, col)
 
             if to_visit:
                 # Push the current cell back onto the stack
@@ -136,7 +162,30 @@ class Maze:
         for row in range(self.num_rows):
             for col in range(self.num_cols):
                 self._cells[row][col].visited=False
-            
+
+    def solve(self):
+        return self._solve_r(0, 0)
+    
+    def _solve_r(self, row, col):
+        self._animate()
+        self._cells[row][col].visited = True
+        if self._cells[row][col] == self._cells[-1][-1]:
+            return True
+        adjacent_cells = self._get_unvisited_adjacent_cells_i(row, col)
+        clear_adjacent_cells = self._get_clear_path_cells(row, col, adjacent_cells)
+        if not clear_adjacent_cells:
+            return False
+        else:
+            for a_row, a_col in clear_adjacent_cells:
+                to_cell = self._cells[a_row][a_col]
+                self._cells[row][col].draw_move(to_cell)
+                valid = self._solve_r(a_row, a_col)
+                if valid:
+                    return True
+                else:
+                    self._cells[row][col].draw_move(to_cell, undo=True)
+
+            return False
             
             
             
