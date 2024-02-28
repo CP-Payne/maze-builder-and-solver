@@ -1,19 +1,16 @@
 from graphics import Window, Line, Point
 from maze import Cell, Maze
+import sys
 
 def main():
     win = Window(1000, 1000)
 
-    # cell1 = Cell(win)
-    # cell1.draw(200, 200, 250, 250)
+    # Large maze sizes causes program to reach recursion depth to fast. 
+    # Not recommended to change the recursion depth though :O
+    sys.setrecursionlimit(10000)
 
-    # cell2 = Cell(win)
-    # cell2.draw(300, 300, 350, 350)
-
-    # cell1.draw_move(cell2, undo=True)
-    maze = Maze(50, 50, 10, 10, 50, 50, win)
-    print(maze._cells[0][0].has_top_wall)
-
+    # x1, y1, num_rows, num_cols, cell_size_x, cell_size_y, win, seed=None
+    maze = Maze(50, 50, 30, 30, 30, 30, win)
 
     win.wait_for_close()
 
