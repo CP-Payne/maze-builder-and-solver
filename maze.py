@@ -12,6 +12,7 @@ class Maze:
         self._win = win
         self._cells = []
         self._create_cells()
+        self._break_entrance_and_exit()
     
     def _create_cells(self):
         for row in range(self.num_rows):
@@ -39,6 +40,12 @@ class Maze:
         self._win.redraw()
         time.sleep(0.05)
 
+    def _break_entrance_and_exit(self):
+        self._cells[0][0].has_top_wall = False
+        self._cells[-1][-1].has_bottom_wall = False
+        self._draw_cell(0, 0)
+        self._draw_cell(self.num_rows-1, self.num_cols-1)
+
 class Cell:
     def __init__(self, window) -> None:
         self._x1 = None
@@ -56,26 +63,38 @@ class Cell:
         self._x2 = x2
         self._y1 = y1
         self._y2 = y2
+        color = "#d9d9d9"
+
         if self.has_bottom_wall:
-            start_point = Point(x1, y2)
-            end_point = Point(x2,y2)
-            bottom_line = Line(start_point, end_point)
-            self._win.draw_line(bottom_line)
+            color="black"
+        start_point = Point(x1, y2)
+        end_point = Point(x2,y2)
+        bottom_line = Line(start_point, end_point)
+        self._win.draw_line(bottom_line, color)
+
+        color="#d9d9d9"
         if self.has_top_wall:
-            start_point = Point(x1, y1)
-            end_point = Point(x2, y1)
-            top_line= Line(start_point, end_point)
-            self._win.draw_line(top_line)
+            color="black"
+        start_point = Point(x1, y1)
+        end_point = Point(x2, y1)
+        top_line= Line(start_point, end_point)
+        self._win.draw_line(top_line, color)
+
+        color="#d9d9d9"
         if self.has_left_wall:
-            start_point = Point(x1, y1)
-            end_point = Point(x1, y2)
-            left_line= Line(start_point, end_point)
-            self._win.draw_line(left_line)
+            color="black"
+        start_point = Point(x1, y1)
+        end_point = Point(x1, y2)
+        left_line= Line(start_point, end_point)
+        self._win.draw_line(left_line, color)
+
+        color="#d9d9d9"
         if self.has_right_wall:
-            start_point = Point(x2, y1)
-            end_point = Point(x2, y2)
-            right_line= Line(start_point, end_point)
-            self._win.draw_line(right_line)
+            color="black"
+        start_point = Point(x2, y1)
+        end_point = Point(x2, y2)
+        right_line= Line(start_point, end_point)
+        self._win.draw_line(right_line, color)
     
     def get_midpoint(self):
         return Point(x=(self._x1 + self._x2)/2, y=(self._y1+self._y2)/2)

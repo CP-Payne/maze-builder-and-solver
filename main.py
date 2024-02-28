@@ -11,7 +11,8 @@ def main():
     # cell2.draw(300, 300, 350, 350)
 
     # cell1.draw_move(cell2, undo=True)
-    maze = Maze(50, 50, 1, 11, 50, 50, win)
+    maze = Maze(50, 50, 10, 10, 50, 50, win)
+    print(maze._cells[0][0].has_top_wall)
 
 
     win.wait_for_close()

@@ -5,8 +5,8 @@ from maze import Maze
 class Test(unittest.TestCase):
     def test_maze_create_cells(self):
         win = Window(800, 800)
-        num_cols = 40
-        num_rows = 80
+        num_cols = 20
+        num_rows = 60
         m1 = Maze(0, 0, num_rows, num_cols, 10, 10, win)
         self.assertEqual(
             len(m1._cells),
@@ -14,10 +14,23 @@ class Test(unittest.TestCase):
         )
         self.assertEqual(
             len(m1._cells[0]),
-            num_cols,
+            num_cols, 
         )
-    # TODO: Add new method to test large maze size
-    # TODO: Add new method to test medium maze size
+   
+    def test_entrance_and_exit(self):
+        win = Window(800, 800)
+        num_cols = 20
+        num_rows = 20
+        m = Maze(0, 0, num_rows, num_cols, 10, 10, win)
+         
+        self.assertEqual(
+            m._cells[0][0].has_top_wall,
+            False,
+        )
+        self.assertEqual(
+            m._cells[-1][-1].has_bottom_wall,
+            False,
+        )
 
 if __name__== "__main__":
     unittest.main()
