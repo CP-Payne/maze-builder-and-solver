@@ -32,5 +32,15 @@ class Test(unittest.TestCase):
             False,
         )
 
+    def test_reset_visited(self):
+        win = Window(800, 800)
+        num_cols = 20
+        num_rows = 20
+        m = Maze(0, 0, num_rows, num_cols, 10, 10, win)
+        
+        for row in m._cells:
+            for cell in row:
+                self.assertFalse(cell.visited)
+
 if __name__== "__main__":
     unittest.main()

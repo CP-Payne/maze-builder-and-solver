@@ -103,7 +103,7 @@ class Maze:
             to_visit = self._get_valid_adjacent_cells_i(row, col)
             if len(to_visit) == 0:
                 self._draw_cell(row, col) 
-                self._animate()
+                #self._animate()
                 return
 
             random_direction = random.choice(to_visit)
