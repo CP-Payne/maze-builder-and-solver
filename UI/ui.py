@@ -1,4 +1,8 @@
 import tkinter as tk
+from settings.settings import Settings
+from settings.settings_pages.window_settings import WindowSettings
+from settings.settings_pages.generation_settings import GenerationSettings
+from settings.settings_pages.solver_settings import SolverSettings
 
 class HomePage:
     def __init__(self, width, height, ctrl_p_ratio) -> None:
@@ -9,6 +13,10 @@ class HomePage:
         self._maze_panel_width = width - self._ctrl_panel_width
         self.root = self.init_root()
         self.setup_main_frames()
+        #self.settings = Settings(self.control_panel_frame)
+        self.win_settings = WindowSettings(self.control_panel_frame, self.maze_display_frame, self.root)
+        self.gen_settings = GenerationSettings(self.control_panel_frame, self.maze_display_frame, self.root)
+        self.solver_settings = SolverSettings(self.control_panel_frame,self.maze_display_frame, self.root)
         # Create two main frames
             # Get correct width and heigth
         # Create settings buttons
@@ -23,7 +31,7 @@ class HomePage:
     def setup_main_frames(self):
         # # # Create control panel frame
         self.control_panel_frame = tk.Frame(self.root, width=self._ctrl_panel_width, bg="gray")
-        self.control_panel_frame.pack(side="left", fill="y", expand=True)
+        self.control_panel_frame.pack(side="left", fill="y", expand=False)
 
         # # # Create maze panel
         self.maze_display_frame = tk.Frame(self.root, width=self._maze_panel_width, bg='white')

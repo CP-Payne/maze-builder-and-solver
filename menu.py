@@ -10,67 +10,29 @@ def change_frame_color():
     except tk.TclError:
         print(f"The color '{color}' is not a valid color.")
 
-def show_frame(frame):
-    # Hide all frames
-    for settings_frame in settings_frames:
-        settings_frame.pack_forget()
-    # Show the selected frame
-    frame.pack(fill='both', expand=True)
+
     
-
-root = tk.Tk()
-
-root.title("Maze Builder and Solver")
-
-window_width = 1500
-window_height = 1000
 # for m in get_monitors():
 #     if m.is_primary:
 #         window_width = m.width
 #         window_height = m.height
 #         break
-root.geometry(f"{window_width}x{window_height}")
 
-# Calculate widths for the main frames
-control_panel_width = int(window_width * 0.2)
-maze_display_width = window_width - control_panel_width
 
-# # # Create control panel frame
-control_panel_frame = tk.Frame(root, width=control_panel_width, bg="gray")
-control_panel_frame.pack(side="left", fill="y", expand=True)
-
-# # # Create maze panel
-maze_display_frame = tk.Frame(root, width=maze_display_width, bg='white')
-maze_display_frame.pack(side='right', fill='both', expand=True)
-
-# TODO HERE HERE HRER HERE
-# Create a main frame for the left column
-# left_column = tk.Frame(root)
-# left_column.pack(side='left', fill='both', expand=True)
-
-# # Create a frame for the buttons on the top row of the left column
-button_frame = tk.Frame(control_panel_frame)
-button_frame.pack(side='top', fill='x')
-
-# # Create a frame that will contain the settings frames on the bottom row of the left column
-settings_container = tk.Frame(control_panel_frame, bg='white')
-settings_container.pack(side='top', fill='both', expand=True)
 
 # # Create the main maze display frame on the right column
 # maze_display_frame = tk.Frame(root, bg='white')
 # maze_display_frame.pack(side='left', fill='both', expand=True)
 
 # Create individual frames for each settings page within the settings container
-window_settings_frame = tk.Frame(settings_container, bg='lightblue')
+
 maze_generation_settings_frame = tk.Frame(settings_container, bg='lightgreen')
 solver_settings_frame = tk.Frame(settings_container, bg='lightcoral')
 
 # List of settings frames for easier management
-settings_frames = [window_settings_frame, maze_generation_settings_frame, solver_settings_frame]
+settings_frames = [ maze_generation_settings_frame, solver_settings_frame]
 
 # Create buttons that will show each settings page
-window_settings_button = tk.Button(button_frame, text="Window Settings", command=lambda: show_frame(window_settings_frame))
-window_settings_button.pack(side='top', fill='x')
 
 maze_generation_settings_button = tk.Button(button_frame, text="Maze Generation Settings", command=lambda: show_frame(maze_generation_settings_frame))
 maze_generation_settings_button.pack(side='top', fill='x')
