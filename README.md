@@ -11,3 +11,6 @@ If the maze is bigger than the screen then not all cells are printed to the scre
 Maze Solver
 
 Using TKinter
+
+
+screeninfo (pip)
