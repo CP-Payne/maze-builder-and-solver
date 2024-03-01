@@ -18,8 +18,8 @@ class Maze:
         self._cells = []
         self._create_cells()
         self._break_entrance_and_exit()
-        self._break_walls_r(0, 0)
-        #self._break_walls_iterative()
+        #self._break_walls_r(0, 0)
+        self._break_walls_iterative()
         self._reset_cells_visited()
     
     def _create_cells(self):
@@ -141,7 +141,7 @@ class Maze:
 
         while stack:
             row, col = stack.pop()
-            self._animate()  # If you want to animate the process
+            #self._animate()  # If you want to animate the process
             to_visit = self._get_unvisited_adjacent_cells_i(row, col)
 
             if to_visit:

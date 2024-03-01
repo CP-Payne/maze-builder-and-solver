@@ -10,7 +10,7 @@ def main():
     sys.setrecursionlimit(10000)
 
     # x1, y1, num_rows, num_cols, cell_size_x, cell_size_y, win, seed=None
-    maze = Maze(20, 20, 60, 60, 20, 20, win, seed=None)
+    maze = Maze(20, 20, 30, 30, 20, 20, win, seed=None)
     maze.solve()
 
     win.wait_for_close()
