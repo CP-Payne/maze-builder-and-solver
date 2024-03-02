@@ -4,7 +4,7 @@ import random
 
 
 class Maze:
-    def __init__(self, x1, y1, num_rows, num_cols, cell_size_x, cell_size_y, win, seed=None) -> None:
+    def __init__(self, x1, y1, num_rows, num_cols, cell_size_x, cell_size_y, win, seed=None, stop_event=None) -> None:
         self.x1 = x1
         self.y1 = y1
         self.seed = seed
@@ -16,11 +16,14 @@ class Maze:
         self.cell_size_y = cell_size_y
         self._win = win
         self._cells = []
+        self.stop_event = stop_event
+        self.animate_speed = 0.05
         self._create_cells()
         self._break_entrance_and_exit()
         #self._break_walls_r(0, 0)
-        self._break_walls_iterative()
-        self._reset_cells_visited()
+        #self._break_walls_iterative()
+        #self.generate_maze()
+        #self._reset_cells_visited()
     
     def _create_cells(self):
         for row in range(self.num_rows):
@@ -33,6 +36,16 @@ class Maze:
         for row in range(self.num_rows):
             for col in range(self.num_cols):
                 self._draw_cell(row, col)
+
+    def change_speed(self, speed="faster", by=0.01):
+        while speed == "faster" and self.animate_speed - by <= 0:
+            by /= 10
+        if speed  == 'faster':
+            self.animate_speed -= by
+        elif speed == "slower":
+            self.animate_speed += by
+        else:
+            print("Please choose faster or slower for speed")
                 
 
     def _draw_cell(self, row, col):
@@ -42,11 +55,12 @@ class Maze:
         y2 = ((row+1)*self.cell_size_y)+self.y1
         self._cells[row][col].draw(x1, y1, x2, y2)
 
-    def _animate(self):
+    def _animate(self, animate_speed):
         if self._win is None:
             return
-        self._win.redraw()
-        time.sleep(0.05)
+        self._win.root.after(50, self._win.redraw)
+        #self._win.redraw()
+        time.sleep(animate_speed)
 
     def _break_entrance_and_exit(self):
         self._cells[0][0].has_top_wall = False
@@ -122,6 +136,12 @@ class Maze:
                 # Break current cell's top wall and adjacent cell's bottom wall
                 self._cells[row][col].has_top_wall = False
                 self._cells[adjacent_cell[0]][adjacent_cell[1]].has_bottom_wall = False
+
+    def generate_maze(self):
+        #self._break_walls_r(0, 0)
+        self._break_walls_iterative()
+        self._reset_cells_visited()
+        self._win.close()
             
     def _break_walls_r(self, row, col):
         self._cells[row][col].visited = True
@@ -140,8 +160,11 @@ class Maze:
         self._cells[0][0].visited = True
 
         while stack:
+            if self.stop_event is not None and self.stop_event.is_set():
+                print("Maze generation stopped.")
+                return
             row, col = stack.pop()
-            #self._animate()  # If you want to animate the process
+            self._animate(self.animate_speed)  # If you want to animate the process
             to_visit = self._get_unvisited_adjacent_cells_i(row, col)
 
             if to_visit:
