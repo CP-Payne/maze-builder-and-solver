@@ -11,6 +11,7 @@ class SolverSettings(Settings):
         self.solver_settings_button.pack(side='top', fill='x')
         Settings.settings_frames.append(self.solver_settings_frame)
         self.speed = 0
+        self.spin_val = 0
         self.add_settings_content()
 
         self.thread=None
@@ -18,21 +19,25 @@ class SolverSettings(Settings):
     
     def on_slider_change(self, value):
         if self.generation_settings.maze is not None:
-            self.generation_settings.maze.speed = int(value)
+            self.generation_settings.maze.speed =int(value) ###self.spin_val.get()
         print("Slider Value: ", type(value))
 
     def add_settings_content(self):
         self.ss_label = tk.Label(self.solver_settings_frame, text='Solve Maze')
         self.ss_label.pack(pady=5, padx=5)
-        self.solve_button = tk.Button(self.solver_settings_frame, text="Solve", command=self._solve_maze )
+        self.solve_button = tk.Button(self.solver_settings_frame, text="Solve",textvariable=self.spin_val, command=self._solve_maze )
         self.solve_button.pack()
-        self.slider = tk.Scale(self.solver_settings_frame, from_=1, to=10, orient='horizontal', command=self.on_slider_change)
+        self.slider = tk.Scale(self.solver_settings_frame, from_=1, to=5, orient='horizontal', command=self.on_slider_change)
         self.slider.pack(side='top')
+        # self.spinbox = tk.Spinbox(self.solver_settings_frame, from_=1, to=10, command=self.on_slider_change)
+        # self.spinbox.pack(side="top")
 
     def _solve_maze(self):
+        self.slider.set(1)
         self.generation_settings.solve_maze(self.stop_event)
 
     def start_solver(self):
+        self.generation_settings.maze.speed = 1
         if self.thread is None or not self.thread.is_alive():
             self.stop_event.clear()
             self.thread=Thread(target=self._solve_maze) 

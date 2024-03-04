@@ -63,16 +63,9 @@ class Maze:
     def _animate(self, animate_speed):
         if self._win is None:
             return
-        self._win.root.after(50, self._win.redraw)
+        #self._win.root.after(50, self._win.redraw)
         #self._win.redraw()
         time.sleep(animate_speed)
-    def _animate2(self, animate_speed):
-            # if self._win is None:
-            #     return
-            # self._win.redraw()
-            # time.sleep(animate_speed)
-        if self._win and self._win.root:
-            self._win.root.after(int(animate_speed* 1000), self._win.redraw)
 
     def _break_entrance_and_exit(self):
         self._cells[0][0].has_top_wall = False
@@ -150,12 +143,11 @@ class Maze:
                 self._cells[adjacent_cell[0]][adjacent_cell[1]].has_bottom_wall = False
 
     def generate_maze(self):
-        self._break_walls_r(0, 0)
-        #self._break_walls_iterative()
+        #self._break_walls_r(0, 0)
+        self._break_walls_iterative()
         self._reset_cells_visited()
         #self._win.close()
             
-    # TODO: Fix on UI
     def _break_walls_r(self, row, col):
         self._cells[row][col].visited = True
         while True:
@@ -231,9 +223,9 @@ class Maze:
             return False
             
     def calculate_sleep(self, slider_value):
-        max_slider_value = 10
+        max_slider_value = 5
         min_slider_value = 1
-        max_sleep_time = 2.0  # seconds
+        max_sleep_time = 1.0  # seconds
         min_sleep_time = 0.0  # seconds
         
         # Linear interpolation formula to calculate sleep time

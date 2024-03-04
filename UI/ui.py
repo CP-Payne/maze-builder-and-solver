@@ -21,9 +21,12 @@ class HomePage:
         self.solver_settings = SolverSettings(self.control_panel_frame,self.maze_display_frame, self.root, self.gen_settings)
     
     def on_close(self):
-        print("Application is closing")
-        self.root.destroy()
-        sys.exit()
+        try:
+            print("Application is closing")
+            self.root.destroy()
+            #sys.exit()
+        except Exception as e:
+            print(f"Error while closing :{e}")
 
 
     def init_root(self):

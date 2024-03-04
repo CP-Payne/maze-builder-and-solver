@@ -47,15 +47,25 @@ class GenerationSettings(Settings):
         self.gs_stop_maze_button = tk.Button(self.generation_settings_frame, text="Stop Maze Generation", command=self.stop_maze_generation)
         self.gs_stop_maze_button.pack(side="top", fill="x")
 
+        self.speed_gen_panel = tk.Frame(self.generation_settings_frame)
+        self.speed_gen_panel.pack(side="top", fill="x")
+        self.slower = tk.Button(self.speed_gen_panel, text="Slower")
+        self.slower.grid(column=0, row=0)
+        self.gen_speed_spin = tk.Spinbox(self.speed_gen_panel, from_=1, to=10)
+        self.gen_speed_spin.grid(row=0, column=1)
+
+        self.faster = tk.Button(self.speed_gen_panel, text="Faster")
+        self.faster.grid(column=2, row=0)
 
     def _generate_maze(self, stop_event):
         row_num = int(self.rows_entry.get())
         col_num = int(self.cols_entry.get())
         cell_size = int(self.cell_size_entry.get())
     
-        x_offset, y_offset = self.calculate_maze_position(row_num, col_num, cell_size)
+        x_offset, y_offset, fit = self.calculate_maze_position(row_num, col_num, cell_size)
             
-        if x_offset is not None and y_offset is not None:
+        # if x_offset is not None and y_offset is not None:
+        if fit:
             self.maze = Maze(x_offset, y_offset, row_num, col_num, cell_size,cell_size, self.mazeWin, seed=None, stop_event=stop_event, should_animate=self.visualise.get())
             self.maze.generate_maze()
             self.gs_create_maze_button.config(state="normal")
@@ -107,14 +117,16 @@ class GenerationSettings(Settings):
     def calculate_maze_position(self, num_rows, num_cols, cell_size):
         x_offset = (Settings.maze_panel.winfo_width()//2) - ((num_cols * cell_size) // 2)
         y_offset = (Settings.maze_panel.winfo_height()//2) - ((num_rows * cell_size) // 2)
-        if x_offset < 0:
+        fit = True
+        if x_offset < cell_size:
             # Check if maze will fit on screen (width)
             messagebox.showerror("Error", "Maze cannot fit into screen. Options: \n- Increase window width\n- Reduce maze columns\n- Reduce cell size")
             x_offset = None
-        elif y_offset < 0:
+            fit = False
+        elif y_offset < cell_size:
             # Check if maze will fit on screen (height)
             messagebox.showerror("Error", "Maze cannot fit into screen. Options: \n- Increase window height\n- Reduce maze rows\n- Reduce cell size")
             y_offset = None
-        else:
+            fit = False
             # Maze can fit on screen
-            return (x_offset, y_offset)
+        return (x_offset, y_offset, fit)

@@ -46,7 +46,7 @@ class MazeWindow:
     def __init__(self, root_tk, maze_panel) -> None:
         self.__root = root_tk
         self.maze_panel = maze_panel
-        self.__root.protocol("WM_DELETE_WINDOW", self.close)
+        #self.__root.protocol("WM_DELETE_WINDOW", self.close)
         self.root = self.__root
         self.__canvas = Canvas(self.maze_panel, width=self.maze_panel.winfo_width(), height=self.maze_panel.winfo_height())
         self.__canvas.pack(fill="both", expand=True)
