@@ -169,8 +169,9 @@ class Maze:
                 print("Maze generation stopped.")
                 return
             row, col = stack.pop()
-            if self.should_animate == 1:
-                self._animate(self.animate_speed)  # If you want to animate the process
+            # if self.should_animate == 1:
+            #     self._animate(self.animate_speed)  # If you want to animate the process
+            self._animate(self.calculate_sleep(self.animate_speed))
             to_visit = self._get_unvisited_adjacent_cells_i(row, col)
 
             if to_visit:

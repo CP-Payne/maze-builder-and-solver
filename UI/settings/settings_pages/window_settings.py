@@ -14,14 +14,17 @@ class WindowSettings(Settings):
         self.add_settings_content()
 
     def add_settings_content(self):
+        self.ws_label = tk.Label(self.window_settings_frame, text='Window Settings', font='Helvetica 12 bold')
+        self.ws_label.pack(pady=5, padx=5)
+        
         # Width widgets (label + entry)
-        self.w_width_label = tk.Label(self.window_settings_frame, text='Window Width')
-        self.w_width_label.pack(pady=5)
+        self.w_width_label = tk.Label(self.window_settings_frame, text='Window Width:' , anchor="w", font='Helvetica 8 bold')
+        self.w_width_label.pack(fill="x", pady=(5, 0), padx=(5, 0))
         self.w_width_entry = tk.Entry(self.window_settings_frame)
         self.w_width_entry.pack(pady=5)
         # Heigth widgets (label + entry)
-        self.w_height_label = tk.Label(self.window_settings_frame, text='Window Height')
-        self.w_height_label.pack(pady=5)
+        self.w_height_label = tk.Label(self.window_settings_frame, text='Window Height:' , anchor="w", font='Helvetica 8 bold')
+        self.w_height_label.pack(fill="x", pady=(5, 0), padx=(5, 0))
         self.w_height_entry= tk.Entry(self.window_settings_frame)
         self.w_height_entry.pack(pady=5)
 

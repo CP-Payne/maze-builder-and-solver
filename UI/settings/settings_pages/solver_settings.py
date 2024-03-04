@@ -23,12 +23,18 @@ class SolverSettings(Settings):
         print("Slider Value: ", type(value))
 
     def add_settings_content(self):
-        self.ss_label = tk.Label(self.solver_settings_frame, text='Solve Maze')
+        self.ss_label = tk.Label(self.solver_settings_frame, text='Solve Maze', font='Helvetica 12 bold')
         self.ss_label.pack(pady=5, padx=5)
-        self.solve_button = tk.Button(self.solver_settings_frame, text="Solve",textvariable=self.spin_val, command=self._solve_maze )
-        self.solve_button.pack()
+
+        self.sc_label = tk.Label(self.solver_settings_frame, text='Speed Controller:', anchor="w", font='Helvetica 8 bold')
+        self.sc_label.pack(fill="x", pady=(5, 0), padx=(5, 0))
+
         self.slider = tk.Scale(self.solver_settings_frame, from_=1, to=5, orient='horizontal', command=self.on_slider_change)
-        self.slider.pack(side='top')
+        self.slider.pack(side='top', fill="x")
+
+        self.solve_button = tk.Button(self.solver_settings_frame, text="Start",textvariable=self.spin_val, command=self._solve_maze )
+        self.solve_button.pack(side="top", fill="x")
+        
         # self.spinbox = tk.Spinbox(self.solver_settings_frame, from_=1, to=10, command=self.on_slider_change)
         # self.spinbox.pack(side="top")
 

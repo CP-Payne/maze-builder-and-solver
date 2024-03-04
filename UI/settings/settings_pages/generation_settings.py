@@ -23,18 +23,23 @@ class GenerationSettings(Settings):
         self.maze = None
 
     def add_settings_content(self):
-        self.rows_label = tk.Label(self.generation_settings_frame, text='Rows:')
-        self.rows_label.pack(pady=5, padx=5)
+        self.gs_label = tk.Label(self.generation_settings_frame, text='Generate Maze', font='Helvetica 12 bold')
+        self.gs_label.pack(pady=5, padx=5)
+        
+        self.rows_label = tk.Label(self.generation_settings_frame, text='Rows:' , anchor="w", font='Helvetica 8 bold')
+        self.rows_label.pack(fill="x", pady=(5, 0), padx=(5, 0))
         self.rows_entry = tk.Entry(self.generation_settings_frame)
         self.rows_entry.pack(pady=5, padx=5)
+        self.rows_entry.insert(0, "20")
         
-        self.cols_label = tk.Label(self.generation_settings_frame, text='Cols:')
-        self.cols_label.pack(pady=5, padx=5)
+        self.cols_label = tk.Label(self.generation_settings_frame, text='Cols:' , anchor="w", font='Helvetica 8 bold')
+        self.cols_label.pack(fill="x", pady=(5, 0), padx=(5, 0))
         self.cols_entry = tk.Entry(self.generation_settings_frame)
         self.cols_entry.pack(pady=5, padx=5)
+        self.cols_entry.insert(0, "20")
 
-        self.cell_size_label = tk.Label(self.generation_settings_frame, text='Cell Size:')
-        self.cell_size_label.pack(pady=5, padx=5)
+        self.cell_size_label = tk.Label(self.generation_settings_frame, text='Cell Size:' , anchor="w", font='Helvetica 8 bold')
+        self.cell_size_label.pack(fill="x", pady=(5, 0), padx=(5, 0))
         self.cell_size_entry = tk.Entry(self.generation_settings_frame)
         self.cell_size_entry.pack(pady=5, padx=5)
         self.cell_size_entry.insert(0, "20")
@@ -42,20 +47,27 @@ class GenerationSettings(Settings):
         self.gs_create_maze_button = tk.Button(self.generation_settings_frame, text="Generate Maze", command=self.start_maze_generation)
         self.gs_create_maze_button.pack(side="top", fill="x")
         self.visualise = tk.IntVar()
-        self.gs_animate_check = tk.Checkbutton(self.generation_settings_frame, text="Visualise Creation", variable=self.visualise, offvalue=0,onvalue=1)
-        self.gs_animate_check.pack(side="top" )
+        self.slider = tk.Scale(self.generation_settings_frame, from_=1, to=5, orient='horizontal', command=self.on_slider_change)
+        self.slider.pack(side='top', fill="x")
+        # self.gs_animate_check = tk.Checkbutton(self.generation_settings_frame, text="Visualise Creation", variable=self.visualise, offvalue=0,onvalue=1)
+        # self.gs_animate_check.pack(side="top" )
         self.gs_stop_maze_button = tk.Button(self.generation_settings_frame, text="Stop Maze Generation", command=self.stop_maze_generation)
         self.gs_stop_maze_button.pack(side="top", fill="x")
 
-        self.speed_gen_panel = tk.Frame(self.generation_settings_frame)
-        self.speed_gen_panel.pack(side="top", fill="x")
-        self.slower = tk.Button(self.speed_gen_panel, text="Slower")
-        self.slower.grid(column=0, row=0)
-        self.gen_speed_spin = tk.Spinbox(self.speed_gen_panel, from_=1, to=10)
-        self.gen_speed_spin.grid(row=0, column=1)
+        # self.speed_gen_panel = tk.Frame(self.generation_settings_frame)
+        # self.speed_gen_panel.pack(side="top", fill="x")
+        # self.slower = tk.Button(self.speed_gen_panel, text="Slower")
+        # self.slower.grid(column=0, row=0)
+        # self.gen_speed_spin = tk.Spinbox(self.speed_gen_panel, from_=1, to=10)
+        # self.gen_speed_spin.grid(row=0, column=1)
 
-        self.faster = tk.Button(self.speed_gen_panel, text="Faster")
-        self.faster.grid(column=2, row=0)
+        # self.faster = tk.Button(self.speed_gen_panel, text="Faster")
+        # self.faster.grid(column=2, row=0)
+
+    def on_slider_change(self, value):
+        if self.maze is not None:
+            self.maze.animate_speed=int(value) ###self.spin_val.get()
+
 
     def _generate_maze(self, stop_event):
         row_num = int(self.rows_entry.get())
@@ -70,18 +82,10 @@ class GenerationSettings(Settings):
             self.maze.generate_maze()
             self.gs_create_maze_button.config(state="normal")
             self.gs_stop_maze_button.config(state="disabled")
-            # TODO: Remove below only if animate is on and maze generation finished
-            if self.visualise.get() == 1:
-                self.speed_down_button.destroy()
-                self.speed_up_button.destroy()
-                self.speed_entry.destroy()
+
         else:
             self.gs_create_maze_button.config(state="normal")
             self.gs_stop_maze_button.config(state="disabled")
-            if self.visualise.get() == 1:
-                self.speed_down_button.destroy()
-                self.speed_up_button.destroy()
-                self.speed_entry.destroy()
 
     def start_maze_generation(self):
         # Prevent starting multiple threads
@@ -100,10 +104,10 @@ class GenerationSettings(Settings):
             self.speed_entry = tk.Entry(self.generation_settings_frame)
             self.speed_entry.pack(side="top", fill= "x")
             self.speed_entry.insert(0, "0.01")
-            self.speed_up_button = tk.Button(self.generation_settings_frame, text="Speed Up", command= lambda: self.maze.change_speed(speed="faster", by=float(self.speed_entry.get())))
-            self.speed_up_button.pack(side="top", fill="x")
-            self.speed_down_button = tk.Button(self.generation_settings_frame, text="Speed Down", command= lambda: self.maze.change_speed(speed="slower", by=float(self.speed_entry.get())))
-            self.speed_down_button.pack(side="top", fill="x")
+            # self.speed_up_button = tk.Button(self.generation_settings_frame, text="Speed Up", command= lambda: self.maze.change_speed(speed="faster", by=float(self.speed_entry.get())))
+            # self.speed_up_button.pack(side="top", fill="x")
+            # self.speed_down_button = tk.Button(self.generation_settings_frame, text="Speed Down", command= lambda: self.maze.change_speed(speed="slower", by=float(self.speed_entry.get())))
+            # self.speed_down_button.pack(side="top", fill="x")
 
     def stop_maze_generation(self):
         if self.maze.stop_event:
