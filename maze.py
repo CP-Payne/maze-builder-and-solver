@@ -4,7 +4,7 @@ import random
 
 
 class Maze:
-    def __init__(self, x1, y1, num_rows, num_cols, cell_size_x, cell_size_y, win, seed=None, stop_event=None) -> None:
+    def __init__(self, x1, y1, num_rows, num_cols, cell_size_x, cell_size_y, win, seed=None, stop_event=None, should_animate=0) -> None:
         self.x1 = x1
         self.y1 = y1
         self.seed = seed
@@ -18,6 +18,7 @@ class Maze:
         self._cells = []
         self.stop_event = stop_event
         self.animate_speed = 0.05
+        self.should_animate = should_animate
         self._create_cells()
         self._break_entrance_and_exit()
         #self._break_walls_r(0, 0)
@@ -38,8 +39,10 @@ class Maze:
                 self._draw_cell(row, col)
 
     def change_speed(self, speed="faster", by=0.01):
+        # TODO: Add speed caps
+        # TODO: Add slider?
         while speed == "faster" and self.animate_speed - by <= 0:
-            by /= 10
+            by /= 30
         if speed  == 'faster':
             self.animate_speed -= by
         elif speed == "slower":
@@ -55,12 +58,20 @@ class Maze:
         y2 = ((row+1)*self.cell_size_y)+self.y1
         self._cells[row][col].draw(x1, y1, x2, y2)
 
+    # TODO: LOGIC ERROR BELOW???
     def _animate(self, animate_speed):
         if self._win is None:
             return
         self._win.root.after(50, self._win.redraw)
         #self._win.redraw()
         time.sleep(animate_speed)
+    def _animate2(self, animate_speed):
+            # if self._win is None:
+            #     return
+            # self._win.redraw()
+            # time.sleep(animate_speed)
+        if self._win and self._win.root:
+            self._win.root.after(int(animate_speed* 1000), self._win.redraw)
 
     def _break_entrance_and_exit(self):
         self._cells[0][0].has_top_wall = False
@@ -138,10 +149,10 @@ class Maze:
                 self._cells[adjacent_cell[0]][adjacent_cell[1]].has_bottom_wall = False
 
     def generate_maze(self):
-        #self._break_walls_r(0, 0)
-        self._break_walls_iterative()
+        self._break_walls_r(0, 0)
+        #self._break_walls_iterative()
         self._reset_cells_visited()
-        self._win.close()
+        #self._win.close()
             
     def _break_walls_r(self, row, col):
         self._cells[row][col].visited = True
@@ -164,7 +175,8 @@ class Maze:
                 print("Maze generation stopped.")
                 return
             row, col = stack.pop()
-            self._animate(self.animate_speed)  # If you want to animate the process
+            if self.should_animate == 1:
+                self._animate(self.animate_speed)  # If you want to animate the process
             to_visit = self._get_unvisited_adjacent_cells_i(row, col)
 
             if to_visit:
@@ -186,12 +198,17 @@ class Maze:
             for col in range(self.num_cols):
                 self._cells[row][col].visited=False
 
-    def solve(self):
-        return self._solve_r(0, 0)
+    def solve(self, stop_event=None):
+        self._solve_r(0, 0, stop_event)
+        #self._solve_iterative(stop_event)
     
-    def _solve_r(self, row, col):
-        self._animate()
+    def _solve_r(self, row, col, stop_event):
+        if stop_event and stop_event.is_set():
+            print("Solver Stopped.")
+            return False
         self._cells[row][col].visited = True
+        self._animate(0.5)
+        self._win.redraw()
         if self._cells[row][col] == self._cells[-1][-1]:
             return True
         adjacent_cells = self._get_unvisited_adjacent_cells_i(row, col)
@@ -202,7 +219,8 @@ class Maze:
             for a_row, a_col in clear_adjacent_cells:
                 to_cell = self._cells[a_row][a_col]
                 self._cells[row][col].draw_move(to_cell)
-                valid = self._solve_r(a_row, a_col)
+
+                valid = self._solve_r(a_row, a_col, stop_event)
                 if valid:
                     return True
                 else:
@@ -210,7 +228,47 @@ class Maze:
 
             return False
             
-            
+
+    def _solve_iterative(self, stop_event):
+        stack = [(0, 0)]  # Start from the top-left cell
+        path = []  # Keep track of the path for undoing moves
+
+        while stack:
+            if stop_event is not None and stop_event.is_set():
+                print("Maze generation stopped.")
+                return
+            row, col = stack.pop()
+            self._animate(0.5)
+            self._cells[row][col].visited = True
+
+            # Check if the current cell is the exit
+            if self._cells[row][col] == self._cells[-1][-1]:
+                print("Maze solved")
+                return True
+
+            adjacent_cells = self._get_unvisited_adjacent_cells_i(row, col)
+            clear_adjacent_cells = self._get_clear_path_cells(row, col, adjacent_cells)
+
+            if clear_adjacent_cells:
+                # If there are clear adjacent cells, choose one and proceed
+                a_row, a_col = clear_adjacent_cells[0]  # For simplicity, choose the first clear cell
+                to_cell = self._cells[a_row][a_col]
+                self._cells[row][col].draw_move(to_cell)
+                stack.append((a_row, a_col))  # Add the chosen cell to the stack for visiting
+                path.append((row, col))  # Add the current cell to the path
+            else:
+                # If there are no clear adjacent cells, backtrack
+                if path:
+                    back_row, back_col = path.pop()  # Get the last cell from the path for backtracking
+                    self._cells[row][col].draw_move(self._cells[back_row][back_col], undo=True)
+                    # Add the cell we're backtracking to back onto the stack to retry its other paths
+                    stack.append((back_row, back_col))
+            self._win.redraw()
+
+        print("No solution found")
+        return False  # Exit not found or no solution
+
+    
             
 
 class Cell:

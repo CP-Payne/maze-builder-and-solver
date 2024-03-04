@@ -23,26 +23,55 @@ class GenerationSettings(Settings):
         self.maze = None
 
     def add_settings_content(self):
-        self.gs_label = tk.Label(self.generation_settings_frame, text='Generation Size:')
-        self.gs_label.pack(pady=5, padx=5)
-        self.gs_entry = tk.Entry(self.generation_settings_frame)
-        self.gs_entry.pack(pady=5, padx=5)
+        self.rows_label = tk.Label(self.generation_settings_frame, text='Rows:')
+        self.rows_label.pack(pady=5, padx=5)
+        self.rows_entry = tk.Entry(self.generation_settings_frame)
+        self.rows_entry.pack(pady=5, padx=5)
+        
+        self.cols_label = tk.Label(self.generation_settings_frame, text='Cols:')
+        self.cols_label.pack(pady=5, padx=5)
+        self.cols_entry = tk.Entry(self.generation_settings_frame)
+        self.cols_entry.pack(pady=5, padx=5)
+
+        self.cell_size_label = tk.Label(self.generation_settings_frame, text='Cell Size:')
+        self.cell_size_label.pack(pady=5, padx=5)
+        self.cell_size_entry = tk.Entry(self.generation_settings_frame)
+        self.cell_size_entry.pack(pady=5, padx=5)
+        self.cell_size_entry.insert(0, "20")
 
         self.gs_create_maze_button = tk.Button(self.generation_settings_frame, text="Generate Maze", command=self.start_maze_generation)
         self.gs_create_maze_button.pack(side="top", fill="x")
+        self.visualise = tk.IntVar()
+        self.gs_animate_check = tk.Checkbutton(self.generation_settings_frame, text="Visualise Creation", variable=self.visualise, offvalue=0,onvalue=1)
+        self.gs_animate_check.pack(side="top" )
         self.gs_stop_maze_button = tk.Button(self.generation_settings_frame, text="Stop Maze Generation", command=self.stop_maze_generation)
         self.gs_stop_maze_button.pack(side="top", fill="x")
 
+
     def _generate_maze(self, stop_event):
-        x_offset, y_offset = self.calculate_maze_position(20, 20, 20)
+        row_num = int(self.rows_entry.get())
+        col_num = int(self.cols_entry.get())
+        cell_size = int(self.cell_size_entry.get())
+    
+        x_offset, y_offset = self.calculate_maze_position(row_num, col_num, cell_size)
+            
         if x_offset is not None and y_offset is not None:
-            self.maze = Maze(x_offset, y_offset, 20, 20, 20, 20, self.mazeWin, seed=None, stop_event=stop_event)
+            self.maze = Maze(x_offset, y_offset, row_num, col_num, cell_size,cell_size, self.mazeWin, seed=None, stop_event=stop_event, should_animate=self.visualise.get())
             self.maze.generate_maze()
-        self.gs_create_maze_button.config(state="normal")
-        self.gs_stop_maze_button.config(state="disabled")
-        # TODO: Remove below only if animate is on and maze generation finished
-        self.speed_down_button.destroy()
-        self.speed_up_button.destroy()
+            self.gs_create_maze_button.config(state="normal")
+            self.gs_stop_maze_button.config(state="disabled")
+            # TODO: Remove below only if animate is on and maze generation finished
+            if self.visualise.get() == 1:
+                self.speed_down_button.destroy()
+                self.speed_up_button.destroy()
+                self.speed_entry.destroy()
+        else:
+            self.gs_create_maze_button.config(state="normal")
+            self.gs_stop_maze_button.config(state="disabled")
+            if self.visualise.get() == 1:
+                self.speed_down_button.destroy()
+                self.speed_up_button.destroy()
+                self.speed_entry.destroy()
 
     def start_maze_generation(self):
         # Prevent starting multiple threads
@@ -55,20 +84,25 @@ class GenerationSettings(Settings):
         self.gs_create_maze_button.config(state="disabled")
         self.gs_stop_maze_button.config(state="normal")
 
-        # TODO: Show below only if animate is on
-        # TODO: Add entry for speed control
+        # TODO: Validate if entry is integer
         # TODO: Show current speed
-        self.speed_up_button = tk.Button(self.generation_settings_frame, text="Speed Up", command= lambda: self.maze.change_speed("faster"))
-        self.speed_up_button.pack(side="top", fill="x")
-        self.speed_down_button = tk.Button(self.generation_settings_frame, text="Speed Down", command= lambda: self.maze.change_speed("slower"))
-        self.speed_down_button.pack(side="top", fill="x")
+        if self.visualise.get() == 1:
+            self.speed_entry = tk.Entry(self.generation_settings_frame)
+            self.speed_entry.pack(side="top", fill= "x")
+            self.speed_entry.insert(0, "0.01")
+            self.speed_up_button = tk.Button(self.generation_settings_frame, text="Speed Up", command= lambda: self.maze.change_speed(speed="faster", by=float(self.speed_entry.get())))
+            self.speed_up_button.pack(side="top", fill="x")
+            self.speed_down_button = tk.Button(self.generation_settings_frame, text="Speed Down", command= lambda: self.maze.change_speed(speed="slower", by=float(self.speed_entry.get())))
+            self.speed_down_button.pack(side="top", fill="x")
 
     def stop_maze_generation(self):
         if self.maze.stop_event:
             self.maze.stop_event.set()
         self.gs_create_maze_button.config(state="normal")
         self.gs_stop_maze_button.config(state="disabled")
-        
+    
+    def solve_maze(self, stop_event):
+        self.maze.solve(stop_event)
 
     def calculate_maze_position(self, num_rows, num_cols, cell_size):
         x_offset = (Settings.maze_panel.winfo_width()//2) - ((num_cols * cell_size) // 2)
