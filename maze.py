@@ -25,6 +25,7 @@ class Maze:
         #self._break_walls_iterative()
         #self.generate_maze()
         #self._reset_cells_visited()
+        self.speed = 1
     
     def _create_cells(self):
         for row in range(self.num_rows):
@@ -154,6 +155,7 @@ class Maze:
         self._reset_cells_visited()
         #self._win.close()
             
+    # TODO: Fix on UI
     def _break_walls_r(self, row, col):
         self._cells[row][col].visited = True
         while True:
@@ -199,15 +201,15 @@ class Maze:
                 self._cells[row][col].visited=False
 
     def solve(self, stop_event=None):
-        self._solve_r(0, 0, stop_event)
-        #self._solve_iterative(stop_event)
+        #self._solve_r(0, 0, stop_event, speed)
+        self._solve_iterative(stop_event)
     
     def _solve_r(self, row, col, stop_event):
         if stop_event and stop_event.is_set():
             print("Solver Stopped.")
             return False
         self._cells[row][col].visited = True
-        self._animate(0.5)
+        self._animate(self.speed)
         self._win.redraw()
         if self._cells[row][col] == self._cells[-1][-1]:
             return True
@@ -228,7 +230,17 @@ class Maze:
 
             return False
             
-
+    def calculate_sleep(self, slider_value):
+        max_slider_value = 10
+        min_slider_value = 1
+        max_sleep_time = 2.0  # seconds
+        min_sleep_time = 0.0  # seconds
+        
+        # Linear interpolation formula to calculate sleep time
+        sleep_time = ((max_sleep_time - min_sleep_time) * (max_slider_value - slider_value) / (max_slider_value - min_slider_value)) + min_sleep_time
+    
+        return sleep_time
+    
     def _solve_iterative(self, stop_event):
         stack = [(0, 0)]  # Start from the top-left cell
         path = []  # Keep track of the path for undoing moves
@@ -237,8 +249,9 @@ class Maze:
             if stop_event is not None and stop_event.is_set():
                 print("Maze generation stopped.")
                 return
+            print(self.speed)
             row, col = stack.pop()
-            self._animate(0.5)
+            self._animate(self.calculate_sleep(self.speed))
             self._cells[row][col].visited = True
 
             # Check if the current cell is the exit

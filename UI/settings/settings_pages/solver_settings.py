@@ -10,16 +10,24 @@ class SolverSettings(Settings):
         self.solver_settings_button= tk.Button(Settings.button_container, text="Solver Settings", command=lambda: self.show_frame(self.solver_settings_frame))
         self.solver_settings_button.pack(side='top', fill='x')
         Settings.settings_frames.append(self.solver_settings_frame)
+        self.speed = 0
         self.add_settings_content()
 
         self.thread=None
         self.stop_event= Event()
+    
+    def on_slider_change(self, value):
+        if self.generation_settings.maze is not None:
+            self.generation_settings.maze.speed = int(value)
+        print("Slider Value: ", type(value))
 
     def add_settings_content(self):
         self.ss_label = tk.Label(self.solver_settings_frame, text='Solve Maze')
         self.ss_label.pack(pady=5, padx=5)
         self.solve_button = tk.Button(self.solver_settings_frame, text="Solve", command=self._solve_maze )
         self.solve_button.pack()
+        self.slider = tk.Scale(self.solver_settings_frame, from_=1, to=10, orient='horizontal', command=self.on_slider_change)
+        self.slider.pack(side='top')
 
     def _solve_maze(self):
         self.generation_settings.solve_maze(self.stop_event)
@@ -29,7 +37,7 @@ class SolverSettings(Settings):
             self.stop_event.clear()
             self.thread=Thread(target=self._solve_maze) 
             self.thread.start()
-
+            
         
 
         # self.gs_create_maze_button.config(state="disabled")
