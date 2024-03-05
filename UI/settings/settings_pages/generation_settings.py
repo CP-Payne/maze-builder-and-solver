@@ -12,7 +12,7 @@ from maze import Maze
 class GenerationSettings(Settings):
     def __init__(self, ctrl_panel,maze_panel,root) -> None:
         super().__init__(ctrl_panel,maze_panel, root)
-        self.generation_settings_frame = tk.Frame(Settings.settings_container, bg='lightgreen')
+        self.generation_settings_frame = tk.Frame(Settings.settings_container, highlightbackground="gray", highlightthickness=0.5)
         self.generation_settings_button= tk.Button(Settings.button_container, text="Maze Generation Settings", command=lambda: self.show_frame(self.generation_settings_frame))
         self.generation_settings_button.pack(side='top', fill='x')
         Settings.settings_frames.append(self.generation_settings_frame)

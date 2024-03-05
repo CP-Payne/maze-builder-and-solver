@@ -6,7 +6,7 @@ from settings.settings import Settings
 class WindowSettings(Settings):
     def __init__(self, ctrl_panel, maze_panel, root) -> None:
         super().__init__(ctrl_panel,maze_panel, root)
-        self.window_settings_frame = tk.Frame(Settings.settings_container, bg='lightblue')
+        self.window_settings_frame = tk.Frame(Settings.settings_container , highlightbackground="gray", highlightthickness=0.5)
         self.window_settings_button = tk.Button(Settings.button_container, text="Window Settings", command=lambda: self.show_frame(self.window_settings_frame))
         self.window_settings_button.pack(side='top', fill='x')
         Settings.settings_frames.append(self.window_settings_frame)

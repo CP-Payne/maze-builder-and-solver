@@ -6,7 +6,7 @@ class SolverSettings(Settings):
     def __init__(self, ctrl_panel,maze_panel, root, generation_settings) -> None:
         super().__init__(ctrl_panel,maze_panel, root)
         self.generation_settings = generation_settings
-        self.solver_settings_frame = tk.Frame(Settings.settings_container, bg='lightcoral')
+        self.solver_settings_frame = tk.Frame(Settings.settings_container, highlightbackground="gray", highlightthickness=0.5)
         self.solver_settings_button= tk.Button(Settings.button_container, text="Solver Settings", command=lambda: self.show_frame(self.solver_settings_frame))
         self.solver_settings_button.pack(side='top', fill='x')
         Settings.settings_frames.append(self.solver_settings_frame)
