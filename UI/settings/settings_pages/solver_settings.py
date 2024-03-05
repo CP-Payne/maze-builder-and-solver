@@ -32,7 +32,7 @@ class SolverSettings(Settings):
         self.slider = tk.Scale(self.solver_settings_frame, from_=1, to=5, orient='horizontal', command=self.on_slider_change)
         self.slider.pack(side='top', fill="x")
 
-        self.solve_button = tk.Button(self.solver_settings_frame, text="Start",textvariable=self.spin_val, command=self._solve_maze )
+        self.solve_button = tk.Button(self.solver_settings_frame, text="Start",textvariable=self.spin_val, command=self.start_solver)
         self.solve_button.pack(side="top", fill="x")
         
         # self.spinbox = tk.Spinbox(self.solver_settings_frame, from_=1, to=10, command=self.on_slider_change)
