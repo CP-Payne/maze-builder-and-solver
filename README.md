@@ -26,7 +26,7 @@ Maze Builder and Solver is an application designed for creating and solving maze
 
 ## How to Use
 
-1. Launch the application with `python UI/ui.py`
+1. Launch the application with `python ui.py`
 1. Begin by generating a maze using the 'Maze Generation Settings' panel, selecting your desired dimensions.
 2. After the maze is generated, proceed to the 'Solver Settings' panel to initiate the maze solver.
 3. Click 'Start' to commence the solving process. You can watch the solver's progress through the maze and manage the speed using the speed controller.
@@ -47,9 +47,9 @@ Maze Builder and Solver requires Python and Tkinter, which is included by defaul
 Replace path/to/maze-builder-and-solver with the actual path to the application's directory.
 
 3. **Run the Application:**  
-Start the application by executing the `ui.py` Python script within the UI folder:
+Start the application by executing the `ui.py` Python script:
 ```bash
-    python UI/ui.py
+    python ui.py
 ```
 ## Technologies
 
