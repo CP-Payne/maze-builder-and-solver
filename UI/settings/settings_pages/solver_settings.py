@@ -1,5 +1,5 @@
 import tkinter as tk
-from settings.settings import Settings
+from UI.settings.settings import Settings
 from threading import Thread, Event
 
 class SolverSettings(Settings):

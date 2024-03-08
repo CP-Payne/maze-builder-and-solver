@@ -1,8 +1,8 @@
 import tkinter as tk
-from settings.settings import Settings
-from settings.settings_pages.window_settings import WindowSettings
-from settings.settings_pages.generation_settings import GenerationSettings
-from settings.settings_pages.solver_settings import SolverSettings
+from UI.settings.settings import Settings
+from UI.settings.settings_pages.window_settings import WindowSettings
+from UI.settings.settings_pages.generation_settings import GenerationSettings
+from UI.settings.settings_pages.solver_settings import SolverSettings
 import sys
 
 class HomePage:
