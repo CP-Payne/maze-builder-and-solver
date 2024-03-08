@@ -5,7 +5,6 @@ from threading import Thread, Event
 
 import sys
 
-sys.path.append("/home/charles/active_projects/maze-builder-and-solver/")
 from graphics import MazeWindow
 from maze import Maze
 
